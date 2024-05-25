@@ -32,8 +32,20 @@ class State:
     def set_game_state(self, state):
         cells, clicks, score = state
         self.cells, self.clicks, self.score = list(cells), list(clicks), score
+
     def sort(self):
-        pass
+        index_lists = [[] for _ in range(self.ncolors)]
+        for index, color_code in enumerate(self.cells):
+            index_lists[color_code].append(index)
+        indicies = [flattened for index_list in index_lists for flattened in index_list]
+        def index_sort(array):
+            return [array[i] for i in indicies]
+        
+        self.cells = index_sort(self.cells)
+        self.clicks = index_sort(self.clicks)
+        cells, clicks, score = self.latest_pass
+        self.latest_pass = index_sort(cells), index_sort(clicks), score
+
     def get_palette_color_count(self):
         counts = [0] * self.ncolors
         for color_code in self.cells:
