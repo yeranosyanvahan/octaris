@@ -15,11 +15,12 @@ class State:
         self.mode = "pass"
         self.highlighted_color = 0  # Hard-coded highlighted color
         self.clicks = [0] * self.n
+        available_colors = min(self.limit*2-3, self.ncolors) # get how many colors to generate
         if starting:
             self.cells = [self.highlighted_color] * self.highlighted_count + [self.ncolors - 1 - self.highlighted_color] * (self.n - self.highlighted_count)
         else:
             self.cells = [self.highlighted_color] * self.highlighted_count + \
-                        [random.choice([i for i in range(self.ncolors) if i != self.highlighted_color]) for _ in range(self.n - self.highlighted_count)]
+                        [random.choice([i for i in range(available_colors) if i != self.highlighted_color]) for _ in range(self.n - self.highlighted_count)]
             random.shuffle(self.cells)
         self._pass_()
 

@@ -1,5 +1,5 @@
 
-# Color Change Game with Palette
+# Guyner: Color Change Game with Palette
 
 ## Overview
 
