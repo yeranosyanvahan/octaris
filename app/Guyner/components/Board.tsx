@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Dimensions, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, Dimensions, FlatList } from 'react-native';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import State from './State';
 import styles from './BoardStyles';
 
@@ -18,100 +19,104 @@ interface BoardProps {
   onReset: () => void;
   onCycleDifficulty: () => void;
   onSort: () => void;
+  boardSize?: [number, number]; // New prop for board size (rows, columns)
 }
 
-class Board extends React.Component<BoardProps> {
-  width: number;
-  height: number;
-  headerHeight: number;
-  paletteHeight: number;
-  colors: string[];
-  textColors: string[];
+const Board: React.FC<BoardProps> = (props) => {
+  const insets = useSafeAreaInsets();
+  const { width, height } = Dimensions.get('window');
+  const boardSize = props.boardSize || [3, 5];
+  const [rows, columns] = boardSize;
+  const headerHeight = 150; // Directly setting the header height
+  const paletteHeight = 60;
+  const cellWidth = width / columns;
+  const cellHeight = (height - headerHeight - paletteHeight - insets.top - insets.bottom) / rows;
 
-  constructor(props: BoardProps) {
-    super(props);
-    const { width, height } = Dimensions.get('window');
-    this.width = width;
-    this.height = height;
-    this.headerHeight = styles.headerHeight.height;
-    this.paletteHeight = 60;
-    this.colors = colors.slice(0, this.props.state.ncolors);
-    this.textColors = textColors;
-  }
+  const boardColors = colors.slice(0, props.state.ncolors);
+  const boardTextColors = textColors;
 
-  drawBoard(state: State) {
-    const cellSize = Math.min(this.width, this.height - this.headerHeight - this.paletteHeight) / Math.sqrt(state.n);
-    return state.cells.map((cell, index) => {
-      const x = index % Math.sqrt(state.n);
-      const y = Math.floor(index / Math.sqrt(state.n));
-      const color = cell === state.highlightedColor ? '#FFFFFF' : this.colors[cell];
-      const textColor = color === '#FFFFFF' ? '#000000' : this.textColors[cell];
-      return (
-        <TouchableOpacity
-          key={index}
-          style={[styles.cell, { backgroundColor: color, width: cellSize, height: cellSize }]}
-          onPress={() => this.props.onCellClick(index, this.props.selectedColor)}        >
-          <Text style={[styles.cellText, { color: textColor }]}>{state.clicks[index]}</Text>
-        </TouchableOpacity>
-      );
-    });
-  }
+  const renderItem = ({ item, index }) => {
+    const color = item === props.state.highlightedColor ? '#FFFFFF' : boardColors[item];
+    const textColor = color === '#FFFFFF' ? '#000000' : boardTextColors[item];
+    return (
+      <TouchableOpacity
+        key={index}
+        style={[styles.cell, { backgroundColor: color, width: cellWidth, height: cellHeight }]}
+        onPress={() => props.onCellClick(index, props.selectedColor)}
+      >
+        <Text style={[styles.cellText, { color: textColor }]}>{props.state.clicks[index]}</Text>
+      </TouchableOpacity>
+    );
+  };
 
-  drawPalette(state: State, selectedColor: number | null) {
+  const drawPalette = (state: State, selectedColor: number | null) => {
     const colorCounts = state.get_palette_color_count();
     return (
-      <View style={styles.paletteContainer}>
-        {this.colors.map((color, i) => (
+      <View style={[styles.paletteContainer, { height: paletteHeight }]}>
+        {boardColors.map((color, i) => (
           <TouchableOpacity
             key={i}
             style={[
               styles.paletteColor,
               {
-                backgroundColor: i === state.highlightedColor ? '#FFFFFF' : this.colors[i],
+                backgroundColor: i === state.highlightedColor ? '#FFFFFF' : boardColors[i],
                 borderWidth: selectedColor === i ? 3 : 0,
                 borderColor: selectedColor === i ? '#000' : 'transparent',
               },
             ]}
-            onPress={() => this.props.onPaletteClick(i)}
+            onPress={() => props.onPaletteClick(i)}
           >
             <Text style={styles.paletteText}>{colorCounts[i]}</Text>
           </TouchableOpacity>
         ))}
       </View>
     );
-  }
+  };
 
-  drawButton(label: string, onPress: () => void, style: any) {
-    return (
-      <TouchableOpacity style={style} onPress={onPress}>
-        <Text style={styles.buttonText}>{label}</Text>
-      </TouchableOpacity>
-    );
-  }
+  const drawButton = (label: string, onPress: () => void, style: any) => (
+    <TouchableOpacity style={style} onPress={onPress}>
+      <Text style={styles.buttonText}>{label}</Text>
+    </TouchableOpacity>
+  );
 
-  render() {
-    const { state, message, selectedColor, currentDifficulty, highestScore, mode, onReset, onCycleDifficulty, onSort } = this.props;
-    return (
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <View style={styles.headerRow}>
-            {this.drawButton(`Difficulty: ${currentDifficulty}`, onCycleDifficulty, styles.difficultyButton)}
-            <Text style={styles.scoreText}>{message}</Text>
-            <Text style={styles.highestScoreText}>High Score: {highestScore}</Text>
-          </View>
-          <View style={styles.headerRow}>
-            {this.drawButton('Sort', onSort, styles.sortButton)}
-            <Text style={styles.modeText}>Mode: {mode}</Text>
-            {this.drawButton('Reset', onReset, styles.resetButton)}
-          </View>
+  const {
+    state,
+    message,
+    selectedColor,
+    currentDifficulty,
+    highestScore,
+    mode,
+    onReset,
+    onCycleDifficulty,
+    onSort,
+  } = props;
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <View style={[styles.header, { paddingTop: insets.top, height: headerHeight }]}>
+        <View style={styles.headerRow}>
+          {drawButton(`Difficulty: ${currentDifficulty}`, onCycleDifficulty, styles.difficultyButton)}
+          <Text style={styles.scoreText}>{message}</Text>
+          <Text style={styles.highestScoreText}>High Score: {highestScore}</Text>
         </View>
-        <ScrollView contentContainerStyle={styles.boardScrollContainer}>
-          <View style={styles.boardContainer}>{this.drawBoard(state)}</View>
-        </ScrollView>
-        {this.drawPalette(state, selectedColor)}
+        <View style={styles.headerRow}>
+          {drawButton('Sort', onSort, styles.sortButton)}
+          <Text style={styles.modeText}>Mode: {mode}</Text>
+          {drawButton('Reset', onReset, styles.resetButton)}
+        </View>
       </View>
-    );
-  }
-}
+      <View style={[styles.boardContainer, { height: height - headerHeight - paletteHeight - insets.top - insets.bottom }]}>
+        <FlatList
+          data={state.cells}
+          renderItem={renderItem}
+          keyExtractor={(item, index) => index.toString()}
+          numColumns={columns}
+          columnWrapperStyle={{ justifyContent: 'center' }}
+        />
+      </View>
+      {drawPalette(state, selectedColor)}
+    </SafeAreaView>
+  );
+};
 
 export default Board;

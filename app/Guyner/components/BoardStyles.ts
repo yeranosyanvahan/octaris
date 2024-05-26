@@ -6,15 +6,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
+    width: '100%',
   },
   header: {
-    height: 100, // Adjust the header height here as needed
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 10,
-    paddingTop: 20,
   },
   headerRow: {
     flexDirection: 'row',
@@ -23,22 +22,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     marginBottom: 10,
   },
-  boardScrollContainer: {
-    flexGrow: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   boardContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    alignItems: 'center',
-    justifyContent: 'center',
+    width: '100%',
+    flex: 1,
+    marginBottom: 60, // to ensure the board does not overflow and touches the palette
   },
   paletteContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     flexWrap: 'wrap',
-    marginVertical: 10,
     width: '100%',
     height: 60,
     position: 'absolute',
@@ -51,21 +43,23 @@ const styles = StyleSheet.create({
     borderColor: '#000',
   },
   cellText: {
-    fontSize: 20,
+    fontSize: 65,
   },
   scoreText: {
     fontSize: 24,
     color: '#FFF',
     textAlign: 'center',
+    height: buttonHeight,
+    textAlignVertical: 'center',
   },
   paletteColor: {
     justifyContent: 'center',
     alignItems: 'center',
     flex: 1,
-    height: 40,
+    height: 60,
   },
   paletteText: {
-    fontSize: 16,
+    fontSize: 30,
     color: '#000',
   },
   resetButton: {
@@ -98,19 +92,25 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#000',
     fontSize: 16,
+    height: buttonHeight,
+    textAlignVertical: 'center',
   },
   highestScoreText: {
     fontSize: 16,
     color: '#FFF',
     textAlign: 'center',
+    height: buttonHeight,
+    textAlignVertical: 'center',
   },
   modeText: {
     fontSize: 16,
     color: '#FFF',
     textAlign: 'center',
+    height: buttonHeight,
+    textAlignVertical: 'center',
   },
   headerHeight: {
-    height: 100, // Ensure this matches the header height above
+    height: 150,
   },
 });
 
