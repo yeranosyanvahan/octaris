@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
+import { View, Text, TouchableOpacity, Dimensions, ScrollView } from 'react-native';
 import State from './State';
 import styles from './BoardStyles';
 
@@ -12,6 +12,7 @@ interface BoardProps {
   selectedColor: number;
   currentDifficulty: string;
   highestScore: number;
+  mode: string;
   onCellClick: (index: number, color: number) => void;
   onPaletteClick: (color: number) => void;
   onReset: () => void;
@@ -49,26 +50,17 @@ class Board extends React.Component<BoardProps> {
         <TouchableOpacity
           key={index}
           style={[styles.cell, { backgroundColor: color, width: cellSize, height: cellSize }]}
-          onPress={() => this.props.onCellClick(index, this.props.selectedColor)}
-        >
+          onPress={() => this.props.onCellClick(index, this.props.selectedColor)}        >
           <Text style={[styles.cellText, { color: textColor }]}>{state.clicks[index]}</Text>
         </TouchableOpacity>
       );
     });
   }
 
-  drawScore(message: string) {
-    return (
-      <View style={[styles.scoreContainer, { top: this.headerHeight / 2 - 10 }]}>
-        <Text style={styles.scoreText}>{message}</Text>
-      </View>
-    );
-  }
-
   drawPalette(state: State, selectedColor: number | null) {
     const colorCounts = state.get_palette_color_count();
     return (
-      <View style={[styles.paletteContainer, { bottom: 0 }]}>
+      <View style={styles.paletteContainer}>
         {this.colors.map((color, i) => (
           <TouchableOpacity
             key={i}
@@ -98,21 +90,26 @@ class Board extends React.Component<BoardProps> {
   }
 
   render() {
-    const { state, message, selectedColor, currentDifficulty, highestScore, onReset, onCycleDifficulty, onSort } = this.props;
+    const { state, message, selectedColor, currentDifficulty, highestScore, mode, onReset, onCycleDifficulty, onSort } = this.props;
     return (
-      <ScrollView contentContainerStyle={styles.container}>
-        {this.drawScore(message)}
-        <View style={styles.buttonsContainer}>
-          {this.drawButton(`Difficulty: ${currentDifficulty}`, onCycleDifficulty, styles.difficultyButton)}
-          {this.drawButton('Sort', onSort, styles.sortButton)}
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <View style={styles.headerRow}>
+            {this.drawButton(`Difficulty: ${currentDifficulty}`, onCycleDifficulty, styles.difficultyButton)}
+            <Text style={styles.scoreText}>{message}</Text>
+            <Text style={styles.highestScoreText}>High Score: {highestScore}</Text>
+          </View>
+          <View style={styles.headerRow}>
+            {this.drawButton('Sort', onSort, styles.sortButton)}
+            <Text style={styles.modeText}>Mode: {mode}</Text>
+            {this.drawButton('Reset', onReset, styles.resetButton)}
+          </View>
         </View>
-        <View style={styles.rightContainer}>
-          <Text style={styles.highestScoreText}>High Score: {highestScore}</Text>
-          {this.drawButton('Reset', onReset, styles.resetButton)}
-        </View>
-        <View style={styles.boardContainer}>{this.drawBoard(state)}</View>
+        <ScrollView contentContainerStyle={styles.boardScrollContainer}>
+          <View style={styles.boardContainer}>{this.drawBoard(state)}</View>
+        </ScrollView>
         {this.drawPalette(state, selectedColor)}
-      </ScrollView>
+      </View>
     );
   }
 }

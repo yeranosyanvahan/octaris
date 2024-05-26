@@ -1,41 +1,48 @@
 import { StyleSheet } from 'react-native';
 
-const buttonHeight = 30;
+const buttonHeight = 45;
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  header: {
+    height: 100, // Adjust the header height here as needed
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingTop: 20,
+  },
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    paddingHorizontal: 20,
+    marginBottom: 10,
+  },
+  boardScrollContainer: {
     flexGrow: 1,
     alignItems: 'center',
-    paddingVertical: 20,
+    justifyContent: 'center',
   },
   boardContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    marginTop: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   paletteContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     flexWrap: 'wrap',
     marginVertical: 10,
-    position: 'absolute',
     width: '100%',
     height: 60,
+    position: 'absolute',
     bottom: 0,
-  },
-  buttonsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    position: 'absolute',
-    top: 10,
-    left: 10,
-  },
-  rightContainer: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    position: 'absolute',
-    top: 10,
-    right: 10,
   },
   cell: {
     justifyContent: 'center',
@@ -46,13 +53,10 @@ const styles = StyleSheet.create({
   cellText: {
     fontSize: 20,
   },
-  scoreContainer: {
-    position: 'absolute',
-    alignSelf: 'center',
-  },
   scoreText: {
     fontSize: 24,
     color: '#FFF',
+    textAlign: 'center',
   },
   paletteColor: {
     justifyContent: 'center',
@@ -98,9 +102,15 @@ const styles = StyleSheet.create({
   highestScoreText: {
     fontSize: 16,
     color: '#FFF',
+    textAlign: 'center',
+  },
+  modeText: {
+    fontSize: 16,
+    color: '#FFF',
+    textAlign: 'center',
   },
   headerHeight: {
-    height: 50,
+    height: 100, // Ensure this matches the header height above
   },
 });
 
