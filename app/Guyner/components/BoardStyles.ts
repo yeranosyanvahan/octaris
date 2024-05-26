@@ -30,9 +30,7 @@ const styles = StyleSheet.create({
   paletteContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    flexWrap: 'wrap',
     width: '100%',
-    height: 60,
     position: 'absolute',
     bottom: 0,
   },
@@ -56,7 +54,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flex: 1,
-    height: 60,
   },
   paletteText: {
     fontSize: 30,

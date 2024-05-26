@@ -25,12 +25,11 @@ interface BoardProps {
 const Board: React.FC<BoardProps> = (props) => {
   const insets = useSafeAreaInsets();
   const { width, height } = Dimensions.get('window');
-  const boardSize = props.boardSize || [3, 5];
-  const [rows, columns] = boardSize;
-  const headerHeight = 150; // Directly setting the header height
-  const paletteHeight = 60;
+  const [rows, columns] = props.boardSize || [3, 5];
+  const headerHeight = 200; // Directly setting the header height
+  const paletteHeight = 200;
   const cellWidth = width / columns;
-  const cellHeight = (height - headerHeight - paletteHeight - insets.top - insets.bottom) / rows;
+  const cellHeight = (height - headerHeight - paletteHeight - insets.top/2 + 1 - insets.bottom) / rows;
 
   const boardColors = colors.slice(0, props.state.ncolors);
   const boardTextColors = textColors;
